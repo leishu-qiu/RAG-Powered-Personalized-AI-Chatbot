@@ -21,9 +21,9 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import FileUpload from './FileUpload'; // Make sure FileUpload is imported
+import FileUpload from './FileUpload';
 
-function ChatInterface({onBack}) {
+function ChatInterface() {
   const [messages, setMessages] = useState([
     {
       text: "Hello! I'm your personal assistant chatbot, powered by advanced retrieval-augmented generation technology. You can upload a file or enter a URL, and then ask me questions about the content. How may I help you today? Feel free to type your questions below or use the file upload button to get started!",
@@ -31,7 +31,7 @@ function ChatInterface({onBack}) {
     },
   ]);
   const [inputText, setInputText] = useState('');
-  const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
+  const [modalOpen, setModalOpen] = useState(false); // State to control popup visibility
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
@@ -39,16 +39,7 @@ function ChatInterface({onBack}) {
   const [sources, setSources] = useState([]); // All uploaded sources
   const [useSelectiveFilter, setUseSelectiveFilter] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  // useEffect(() => {
-  //   // messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  //   const fetchSources = async () => {
-  //     const response = await fetch('http://localhost:3000/sources');
-  //     const data = await response.json();
-  //     setSources(data.sources);
-  //   };
 
-  //   fetchSources();
-  // }, []); // Empty dependency array means this runs once on mount
   const fetchSources = async () => {
     try {
       const response = await fetch('http://localhost:3000/sources');
@@ -83,20 +74,17 @@ function ChatInterface({onBack}) {
     setUseSelectiveFilter(checked);
 
     if (!checked) {
-      // Checkbox is unchecked, call the backend to disable selective filtering
+      //call the backend to disable selective filtering
       try {
         const response = await fetch('http://localhost:3000/selective_off', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
         });
         const data = await response.json();
-        alert(data.message); // Optionally, handle this with a more integrated UI feedback system
-
-        // You might want to also clear the selected files in the state
-        setSelectedFiles([]);
+        alert(data.message);
+        setSelectedFiles([]); //clear the selected files in the state
       } catch (error) {
         console.error('Failed to disable selective filtering:', error);
-        // Handle errors, perhaps setting state to show an error message
       }
     }
   };
@@ -185,7 +173,6 @@ function ChatInterface({onBack}) {
             <CloseIcon />
           </IconButton>
           <FileUpload onSubmit={handleFileUploadSuccess} />{' '}
-          {/* Pass the new handler */}
         </Box>
       </Modal>
 
@@ -214,21 +201,38 @@ function ChatInterface({onBack}) {
               }}
             >
               <Box
-                bgcolor={message.isBot ? '#f5f5f5' : '#e6f2ff'}
-                p={1}
-                my={1}
-                borderRadius={3.5}
+                sx={{
+                  bgcolor: message.isBot ? '#f5f5f5' : '#e6f2ff',
+                  p: 2,
+                  my: 1,
+                  borderRadius: 2,
+                  boxShadow: 1,
+                }}
               >
                 {message.text}
                 {message.isBot &&
                   message.references &&
                   message.references.length > 0 && (
                     <div>
-                      <button onClick={() => toggleReferences(index)}>
+                      <Button
+                        onClick={() => toggleReferences(index)}
+                        variant='contained'
+                        size='small'
+                        sx={{
+                          mt: 1,
+                          borderRadius: '20px',
+                          padding: '6px 16px',
+                          textTransform: 'none', //text is not all caps
+                          backgroundColor: '#90CAF9',
+                          '&:hover': {
+                            backgroundColor: '#ADD8E6',
+                          },
+                        }}
+                      >
                         {message.showReferences
                           ? 'Hide References'
                           : 'Show References'}
-                      </button>
+                      </Button>
                       {message.showReferences && (
                         <ul>
                           {message.references.map((ref, refIndex) => (
@@ -312,7 +316,6 @@ function ChatInterface({onBack}) {
             </FormControl>
           )}
         </FormGroup>
-        {/* Other UI components and modal as previously defined */}
       </Box>
     </Box>
   );
