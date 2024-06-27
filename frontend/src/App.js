@@ -3,18 +3,18 @@ import ChatInterface from './components/ChatInterface';
 import FileUpload from './components/FileUpload';
 
 function App() {
-  const [showFileUpload, setShowFileUpload] = useState(false); // Control display of FileUpload
+  const [showFileUpload, setShowFileUpload] = useState(false);
 
   const handleFileSubmitted = () => {
-    setShowFileUpload(false); // Hide FileUpload after submission
+    setShowFileUpload(false);
   };
 
   const handleBackToChat = () => {
-    setShowFileUpload(false); // Return to ChatInterface from FileUpload
+    setShowFileUpload(false);
   };
 
   const handleShowFileUpload = () => {
-    setShowFileUpload(true); // Show FileUpload when file button clicked
+    setShowFileUpload(true);
   };
 
   return (

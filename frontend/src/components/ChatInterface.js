@@ -82,7 +82,7 @@ function ChatInterface() {
         });
         const data = await response.json();
         alert(data.message);
-        setSelectedFiles([]); //clear the selected files in the state
+        setSelectedFiles([]);
       } catch (error) {
         console.error('Failed to disable selective filtering:', error);
       }
@@ -90,9 +90,9 @@ function ChatInterface() {
   };
 
   const handleFileUploadSuccess = (message) => {
-    handleCloseModal(); // Close the modal first
+    handleCloseModal();
     const botMessage = {text: message, isBot: true};
-    setMessages((currentMessages) => [...currentMessages, botMessage]); // Add success message to chat
+    setMessages((currentMessages) => [...currentMessages, botMessage]);
     fetchSources();
   };
 
@@ -121,7 +121,7 @@ function ChatInterface() {
     setMessages((currentMessages) =>
       currentMessages.map((msg, msgIndex) => {
         if (msgIndex === index) {
-          return {...msg, showReferences: !msg.showReferences}; // Toggle the showReferences property
+          return {...msg, showReferences: !msg.showReferences};
         }
         return msg;
       }),
@@ -222,7 +222,7 @@ function ChatInterface() {
                           mt: 1,
                           borderRadius: '20px',
                           padding: '6px 16px',
-                          textTransform: 'none', //text is not all caps
+                          textTransform: 'none',
                           backgroundColor: '#90CAF9',
                           '&:hover': {
                             backgroundColor: '#ADD8E6',

@@ -50,7 +50,6 @@ conversation_chain = ConversationalRetrievalChain.from_llm(
 sources = []
 selected_sources = []
 use_filter = False
-# Allowed extension check
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc','docx'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -148,7 +147,7 @@ def handle_upload():
 @app.route('/url', methods=['POST'])
 def scrape_url():
     global sources
-    # This method expects a JSON payload with a URL
+    # method expects a JSON payload with a URL
     if not request.json or 'url' not in request.json:
         return jsonify({'message': 'No URL provided'}), 400
 
@@ -167,9 +166,7 @@ def scrape_url():
         sources.append(domain_name)
         metadatas = [{'source': domain_name} for _ in chunks]
         vectorstore.add_texts(chunks, metadatas)
-        # Optionally, process the text or return a portion of it
-        return jsonify({'content': text[:500]})  # Return first 500 characters of the text
-        # return jsonify({'sources': session['sources']})
+        return jsonify({'content': text[:500]})  
     except requests.RequestException as e:
         return jsonify({'message': 'Failed to retrieve the URL', 'error': str(e)})
 
@@ -211,7 +208,6 @@ def get_domain(url):
     return full_path.rstrip('/') 
 
 def chunk_text(text, chunk_size=1000):
-    # Split the text by sentences to avoid breaking in the middle of a sentence
     sentences = text.split('. ')
     chunks = []
     current_chunk = ""
@@ -219,11 +215,9 @@ def chunk_text(text, chunk_size=1000):
         if len(current_chunk) + len(sentence) <= chunk_size:
             current_chunk += sentence + '. '
         else:
-            # If the chunk reaches the desired size, add it to the chunks list
             chunks.append(current_chunk)
             current_chunk = sentence + '. '
-    # Add the last chunk if it's not empty
-    #TODO: overlap!
+    #TODO: overlap
     if current_chunk:
         chunks.append(current_chunk)
     return chunks
